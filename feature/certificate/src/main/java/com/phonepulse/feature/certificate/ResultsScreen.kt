@@ -74,6 +74,13 @@ fun ResultsScreen(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
+            Text(
+                text = "Build.MODEL: ${certificate.device.model}",
+                fontSize = 11.sp,
+                color = Color(0xFF556677),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
             Spacer(Modifier.height(24.dp))
         }
 
@@ -102,32 +109,27 @@ fun ResultsScreen(
                     )
 
                     if (certificate.matchedModel != null) {
+                        Spacer(Modifier.height(4.dp))
                         Text(
                             text = certificate.matchedModel!!,
                             fontSize = 13.sp,
-                            color = Color(0xFF8899AA),
-                            modifier = Modifier.padding(top = 4.dp)
+                            color = Color(0xFF8899AA)
                         )
                     }
 
-                    val sourceText = when (certificate.priceSource) {
-                        "exact_match" -> "\u2705 \u0422\u043E\u0447\u043D\u043E\u0435 \u0441\u043E\u0432\u043F\u0430\u0434\u0435\u043D\u0438\u0435 \u043C\u043E\u0434\u0435\u043B\u0438"
-                        "partial_match" -> "\u2705 \u041C\u043E\u0434\u0435\u043B\u044C \u0440\u0430\u0441\u043F\u043E\u0437\u043D\u0430\u043D\u0430"
-                        "fuzzy_match" -> "\u26A0 \u041F\u0440\u0438\u0431\u043B\u0438\u0437\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0435 \u0441\u043E\u0432\u043F\u0430\u0434\u0435\u043D\u0438\u0435"
-                        "ram_storage_fallback" -> "\u26A0 \u041E\u0446\u0435\u043D\u043A\u0430 \u043F\u043E RAM/\u043F\u0430\u043C\u044F\u0442\u0438"
-                        else -> "\u26A0 \u0411\u0430\u0437\u043E\u0432\u0430\u044F \u043E\u0446\u0435\u043D\u043A\u0430"
+                    certificate.priceSource?.let { source ->
+                        Text(
+                            text = when (source) {
+                                "exact_match" -> "\u2705 Model matched exactly"
+                                "partial_match" -> "\u2705 Model recognized"
+                                "fuzzy_match" -> "\u26A0\uFE0F Approximate match"
+                                "ram_storage_fallback" -> "\u26A0\uFE0F Price by RAM/Storage"
+                                else -> "\u26A0\uFE0F Base estimate"
+                            },
+                            fontSize = 11.sp,
+                            color = if (source.contains("match")) Color(0xFF00C853) else Color(0xFFFFB300)
+                        )
                     }
-
-                    Text(
-                        text = sourceText,
-                        fontSize = 11.sp,
-                        color = if (certificate.priceSource?.contains("match") == true) {
-                            Color(0xFF00C853)
-                        } else {
-                            Color(0xFFFFB300)
-                        },
-                        modifier = Modifier.padding(top = 2.dp)
-                    )
 
                     certificate.priceDbUpdated?.let {
                         Text(
@@ -163,11 +165,12 @@ fun ResultsScreen(
                             fontWeight = FontWeight.Medium,
                             color = Color.White
                         )
-                        result.details.entries.take(3).forEach { (key, value) ->
+                        if (result.summary.isNotEmpty()) {
                             Text(
-                                text = "$key: $value",
+                                text = result.summary,
                                 fontSize = 12.sp,
-                                color = Color(0xFF8899AA)
+                                color = Color(0xFF8899AA),
+                                maxLines = 2
                             )
                         }
                     }

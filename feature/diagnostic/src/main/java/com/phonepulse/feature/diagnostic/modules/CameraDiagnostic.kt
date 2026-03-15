@@ -90,7 +90,15 @@ class CameraDiagnostic @Inject constructor() : DiagnosticModule {
                 else -> TestStatus.FAILED
             }
 
-            TestResult(moduleName, score.coerceIn(0, 100), status, details)
+            val summary = buildString {
+                append("Cameras: ${cameraIds.size}")
+                if (rearFound) append(" | Rear: OK")
+                if (frontFound) append(" | Front: OK")
+                if (!rearFound) append(" | Rear: MISSING")
+                if (!frontFound) append(" | Front: MISSING")
+            }
+
+            TestResult(moduleName, score.coerceIn(0, 100), status, details, summary)
         } catch (e: SecurityException) {
             TestResult(
                 moduleName,

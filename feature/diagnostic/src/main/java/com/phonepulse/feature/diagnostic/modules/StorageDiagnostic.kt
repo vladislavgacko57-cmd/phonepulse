@@ -78,7 +78,14 @@ class StorageDiagnostic @Inject constructor() : DiagnosticModule {
                 else -> TestStatus.FAILED
             }
 
-            TestResult(moduleName, score.coerceIn(0, 100), status, details)
+            val summary = buildString {
+                append("${details["total_gb"]}GB total, ${details["free_gb"]}GB free")
+                append(" | RAM: ${details["ram_total_gb"]}GB")
+                details["write_speed_mbps"]?.let { append(" | Write: ${it}MB/s") }
+                details["read_speed_mbps"]?.let { append(" | Read: ${it}MB/s") }
+            }
+
+            TestResult(moduleName, score.coerceIn(0, 100), status, details, summary)
         }
     } catch (e: SecurityException) {
         TestResult(

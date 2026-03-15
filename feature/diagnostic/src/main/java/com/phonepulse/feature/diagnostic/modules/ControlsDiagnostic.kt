@@ -71,7 +71,13 @@ class ControlsDiagnostic @Inject constructor() : DiagnosticModule {
                 else -> TestStatus.FAILED
             }
 
-            TestResult(moduleName, score.coerceIn(0, 100), status, details)
+            val summary = buildString {
+                append("Vibrator: ${if (hasVibrator) "OK" else "NO"}")
+                append(" | Fingerprint: ${details["fingerprint_available"]}")
+                append(" | Volume keys: pending")
+            }
+
+            TestResult(moduleName, score.coerceIn(0, 100), status, details, summary)
         } catch (e: SecurityException) {
             TestResult(
                 moduleName,

@@ -238,12 +238,22 @@ private fun ResultRow(result: TestResult) {
                 }
             )
             Spacer(Modifier.width(12.dp))
-            Text(
-                ModuleNames.get(result.moduleName),
-                fontSize = 16.sp,
-                color = Color.White,
-                modifier = Modifier.weight(1f)
-            )
+            Column(Modifier.weight(1f)) {
+                Text(
+                    ModuleNames.get(result.moduleName),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.White
+                )
+                if (result.summary.isNotEmpty()) {
+                    Text(
+                        result.summary,
+                        fontSize = 11.sp,
+                        color = Color(0xFF8899AA),
+                        maxLines = 2
+                    )
+                }
+            }
             Box(
                 modifier = Modifier
                     .size(44.dp)

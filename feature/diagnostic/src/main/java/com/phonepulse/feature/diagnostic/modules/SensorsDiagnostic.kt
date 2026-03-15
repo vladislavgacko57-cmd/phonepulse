@@ -73,7 +73,11 @@ class SensorsDiagnostic @Inject constructor() : DiagnosticModule {
                 else -> TestStatus.FAILED
             }
 
-            TestResult(moduleName, score.coerceIn(0, 100), status, details)
+            val working = details.count { it.value == "working" }
+            val total = sensorsToCheck.size
+            val summary = "Sensors: $working/$total working | Total hardware sensors: ${allSensors.size}"
+
+            TestResult(moduleName, score.coerceIn(0, 100), status, details, summary)
         } catch (e: SecurityException) {
             TestResult(
                 moduleName,

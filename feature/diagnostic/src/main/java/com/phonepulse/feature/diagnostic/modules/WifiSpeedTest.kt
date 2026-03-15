@@ -36,11 +36,15 @@ class WifiSpeedTest @Inject constructor() : DiagnosticModule {
 
         if (!isWifi) {
             details["note"] = "not_on_wifi"
+            val score = 50
+            val status = TestStatus.WARNING
+            val summary = "Speed test failed (${details["skip_reason"] ?: "Not connected to Wi-Fi"})"
             return@withContext TestResult(
                 moduleName = moduleName,
-                score = 50,
-                status = TestStatus.WARNING,
-                details = details + mapOf("skip_reason" to "Не подключено к Wi-Fi")
+                score = score,
+                status = status,
+                details = details + mapOf("skip_reason" to "Not connected to Wi-Fi"),
+                summary = summary
             )
         }
 
@@ -62,11 +66,16 @@ class WifiSpeedTest @Inject constructor() : DiagnosticModule {
         }
 
         if (!success) {
+            val score = 30
+            val status = TestStatus.WARNING
+            val failedDetails = details + mapOf("error" to "all_download_servers_failed")
+            val summary = "Speed test failed (${failedDetails["skip_reason"] ?: failedDetails["error"] ?: "unknown"})"
             return@withContext TestResult(
                 moduleName = moduleName,
-                score = 30,
-                status = TestStatus.WARNING,
-                details = details + mapOf("error" to "all_download_servers_failed")
+                score = score,
+                status = status,
+                details = failedDetails,
+                summary = summary
             )
         }
 
@@ -81,13 +90,14 @@ class WifiSpeedTest @Inject constructor() : DiagnosticModule {
             else -> 30
         }
 
-        details["speed_label"] = when {
+        val speedLabel = when {
             downloadSpeed >= 100 -> "Отлично"
             downloadSpeed >= 50 -> "Очень хорошо"
             downloadSpeed >= 25 -> "Хорошо"
             downloadSpeed >= 10 -> "Средне"
             else -> "Медленно"
         }
+        details["speed_label"] = speedLabel
 
         val status = when {
             score >= 80 -> TestStatus.PASSED
@@ -95,7 +105,13 @@ class WifiSpeedTest @Inject constructor() : DiagnosticModule {
             else -> TestStatus.FAILED
         }
 
-        TestResult(moduleName, score, status, details)
+        val summary = if (success) {
+            "Download: ${"%.1f".format(downloadSpeed)} Mbps ($speedLabel)"
+        } else {
+            "Speed test failed (${details["skip_reason"] ?: details["error"] ?: "unknown"})"
+        }
+
+        TestResult(moduleName, score, status, details, summary)
     }
 
     private fun measureDownloadSpeed(urlString: String): Double {
