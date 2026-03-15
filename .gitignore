@@ -1,0 +1,12 @@
+*.iml
+.gradle/
+.kotlin/
+local.properties
+.idea/
+build/
+**/build/
+captures/
+.DS_Store
+build.log
+emulator_*.png
+window_dump.xml

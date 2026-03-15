@@ -1,0 +1,305 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhonePulse - Сертификат</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0F1923;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container { max-width: 480px; width: 100%; }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #1A2733;
+            margin-bottom: 24px;
+        }
+        .header h1 { color: #00C9A7; font-size: 24px; }
+        .header p { color: #8899AA; font-size: 13px; margin-top: 4px; }
+        .verified {
+            background: rgba(0, 200, 83, 0.15);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .verified .icon { font-size: 28px; }
+        .verified .text { color: #00C853; font-weight: 600; }
+        .verified .sub { color: #8899AA; font-size: 12px; }
+        .device {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .device h2 { font-size: 22px; }
+        .device .specs { color: #8899AA; font-size: 13px; margin-top: 4px; }
+        .score-box {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .score-box .number {
+            font-size: 72px;
+            font-weight: 800;
+            line-height: 1;
+        }
+        .score-box .grade {
+            font-size: 28px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        .grade-S, .score-S { color: #00C9A7; }
+        .grade-A, .score-A { color: #00C853; }
+        .grade-B, .score-B { color: #FFB300; }
+        .grade-C, .score-C { color: #FF9100; }
+        .grade-D, .score-D { color: #FF1744; }
+        .price-card {
+            background: #1A2733;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .price-card .label { color: #8899AA; font-size: 14px; }
+        .price-card .value {
+            color: #00C9A7;
+            font-size: 26px;
+            font-weight: 700;
+            margin-top: 6px;
+        }
+        .module-card {
+            background: #1A2733;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .module-card .name { font-size: 15px; }
+        .module-card .module-score {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .passed { color: #00C853; }
+        .warning { color: #FFB300; }
+        .failed { color: #FF1744; }
+        .details { color: #8899AA; font-size: 11px; margin-top: 2px; }
+        .footer {
+            text-align: center;
+            padding: 24px 0;
+            color: #556677;
+            font-size: 11px;
+        }
+        .error-box {
+            background: rgba(255, 23, 68, 0.15);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        .error-box h2 { color: #FF1744; }
+        .error-box p { color: #8899AA; margin-top: 8px; }
+        .download-btn {
+            display: inline-block;
+            background: #00C9A7;
+            color: white;
+            padding: 12px 32px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 24px;
+        }
+        #loading {
+            text-align: center;
+            padding: 60px 0;
+            color: #8899AA;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📱 PhonePulse</h1>
+        <p>Сертификат состояния устройства</p>
+    </div>
+
+    <div id="loading">
+        <p>Загрузка сертификата...</p>
+    </div>
+
+    <div id="content" style="display: none;"></div>
+
+    <div id="error" style="display: none;">
+        <div class="error-box">
+            <h2>❌ Невалидный сертификат</h2>
+            <p>QR-код не содержит данных PhonePulse или повреждён.</p>
+            <a href="https://play.google.com/store/apps/details?id=com.phonepulse.app" class="download-btn">Скачать PhonePulse</a>
+        </div>
+    </div>
+</div>
+
+<script>
+async function decompressGzip(base64Data) {
+    const binaryString = atob(base64Data);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    const ds = new DecompressionStream('gzip');
+    const writer = ds.writable.getWriter();
+    writer.write(bytes);
+    writer.close();
+
+    const reader = ds.readable.getReader();
+    const chunks = [];
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+    }
+
+    const totalLength = chunks.reduce((acc, c) => acc + c.length, 0);
+    const result = new Uint8Array(totalLength);
+    let offset = 0;
+    for (const chunk of chunks) {
+        result.set(chunk, offset);
+        offset += chunk.length;
+    }
+
+    return new TextDecoder().decode(result);
+}
+
+const moduleNames = {
+    battery: '🔋 Батарея',
+    display: '📱 Экран',
+    audio: '🔊 Аудио',
+    camera: '📷 Камеры',
+    sensors: '🧭 Датчики',
+    connectivity: '📡 Связь',
+    storage: '💾 Память',
+    controls: '🎛 Управление',
+    wifi_speed: '📶 Wi-Fi скорость'
+};
+
+function scoreClass(score) {
+    if (score >= 80) return 'passed';
+    if (score >= 50) return 'warning';
+    return 'failed';
+}
+
+function formatPrice(n) {
+    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+}
+
+function renderCertificate(cert) {
+    const gradeClass = 'grade-' + cert.grade;
+    const scoreColorClass = 'score-' + cert.grade;
+
+    let html = `
+        <div class="verified">
+            <div class="icon">✅</div>
+            <div>
+                <div class="text">Сертификат подтверждён</div>
+                <div class="sub">${cert.certId} • ${cert.timestamp.substring(0, 10)}</div>
+            </div>
+        </div>
+
+        <div class="device">
+            <h2>${cert.device.manufacturer} ${cert.device.model}</h2>
+            <div class="specs">
+                Android ${cert.device.androidVersion} •
+                ${Math.round(cert.device.ramGb)}GB RAM •
+                ${Math.round(cert.device.storageGb)}GB
+            </div>
+        </div>
+
+        <div class="score-box">
+            <div class="number ${scoreColorClass}">${cert.overallScore}</div>
+            <div class="grade ${gradeClass}">Грейд ${cert.grade}</div>
+        </div>
+    `;
+
+    if (cert.recommendedPriceMin) {
+        html += `
+            <div class="price-card">
+                <div class="label">💰 Справедливая цена</div>
+                <div class="value">${formatPrice(cert.recommendedPriceMin)} – ${formatPrice(cert.recommendedPriceMax)} ₽</div>
+            </div>
+        `;
+    }
+
+    if (cert.results && cert.results.length > 0) {
+        cert.results.forEach(r => {
+            const name = moduleNames[r.moduleName] || r.moduleName;
+            const cls = scoreClass(r.score);
+            let detailsHtml = '';
+            if (r.details) {
+                const entries = Object.entries(r.details).slice(0, 3);
+                detailsHtml = entries.map(([k, v]) => `${k}: ${v}`).join(' • ');
+            }
+            html += `
+                <div class="module-card">
+                    <div>
+                        <div class="name">${name}</div>
+                        ${detailsHtml ? `<div class="details">${detailsHtml}</div>` : ''}
+                    </div>
+                    <div class="module-score ${cls}">${r.score}</div>
+                </div>
+            `;
+        });
+    }
+
+    html += `
+        <div class="footer">
+            Сгенерировано приложением PhonePulse<br>
+            <a href="https://play.google.com/store/apps/details?id=com.phonepulse.app" style="color: #00C9A7;">Скачать PhonePulse</a>
+        </div>
+    `;
+
+    return html;
+}
+
+async function init() {
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(window.location.search);
+    const data = hash || params.get('d');
+
+    if (!data) {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error').style.display = 'block';
+        return;
+    }
+
+    try {
+        const json = await decompressGzip(data);
+        const cert = JSON.parse(json);
+
+        if (!cert.certId || !cert.overallScore) {
+            throw new Error('Invalid certificate');
+        }
+
+        document.getElementById('loading').style.display = 'none';
+        const content = document.getElementById('content');
+        content.innerHTML = renderCertificate(cert);
+        content.style.display = 'block';
+    } catch (e) {
+        console.error('Decode error:', e);
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error').style.display = 'block';
+    }
+}
+
+init();
+</script>
+</body>
+</html>

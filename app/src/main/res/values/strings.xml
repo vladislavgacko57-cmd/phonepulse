@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">PhonePulse</string>
+    <string name="start_diagnostic">Начать диагностику</string>
+    <string name="scan_certificate">Сканировать сертификат</string>
+    <string name="history">История диагностик</string>
+    <string name="slogan">Пульс телефона за 3 минуты</string>
+    <string name="certificate_title">Сертификат состояния</string>
+    <string name="recommended_price">Рекомендуемая цена</string>
+    <string name="share_certificate">Поделиться сертификатом</string>
+    <string name="save_pdf">Сохранить PDF</string>
+    <string name="grade">Грейд</string>
+    <string name="no_history">Пока нет диагностик</string>
+    <string name="permissions_title">Разрешения</string>
+    <string name="skip">Пропустить</string>
+    <string name="next">Далее</string>
+    <string name="start">Начать</string>
+</resources>
