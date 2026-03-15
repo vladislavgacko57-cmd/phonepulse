@@ -264,7 +264,7 @@ class DiagnosticViewModel @Inject constructor(
             val grade = DiagnosticWeights.gradeFromScore(overallScore)
             val deviceInfo = DeviceInfoCollector.collect(context)
             val certId = "PP-${Year.now().value}-${UUID.randomUUID().toString().take(8).uppercase()}"
-            val priceRange = priceEstimator.estimate(deviceInfo, overallScore)
+            val estimation = priceEstimator.estimate(deviceInfo, overallScore)
 
             val certificate = Certificate(
                 certId = certId,
@@ -273,8 +273,11 @@ class DiagnosticViewModel @Inject constructor(
                 results = results.toList(),
                 overallScore = overallScore,
                 grade = grade,
-                recommendedPriceMin = priceRange.first,
-                recommendedPriceMax = priceRange.second
+                recommendedPriceMin = estimation.minPrice,
+                recommendedPriceMax = estimation.maxPrice,
+                matchedModel = estimation.matchedModel,
+                priceSource = estimation.source,
+                priceDbUpdated = estimation.dbUpdated
             )
 
             val json = Json.encodeToString(certificate)

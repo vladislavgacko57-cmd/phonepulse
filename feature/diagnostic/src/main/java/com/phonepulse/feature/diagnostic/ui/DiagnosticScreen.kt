@@ -44,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.phonepulse.core.common.ModuleNames
 import com.phonepulse.core.model.TestResult
 import com.phonepulse.core.model.TestStatus
 import com.phonepulse.feature.diagnostic.DiagnosticPhase
@@ -173,7 +174,7 @@ private fun AutomaticTestsView(state: DiagnosticState) {
 
         val phaseText = when (state.phase) {
             DiagnosticPhase.GENERATING_CERT -> "Генерация сертификата..."
-            else -> "Тестируем: ${friendlyName(state.currentModuleName)}"
+            else -> "Тестируем: ${ModuleNames.get(state.currentModuleName)}"
         }
 
         Text(phaseText, fontSize = 16.sp, color = Color(0xFF00C9A7).copy(alpha = alpha))
@@ -238,7 +239,7 @@ private fun ResultRow(result: TestResult) {
             )
             Spacer(Modifier.width(12.dp))
             Text(
-                friendlyName(result.moduleName),
+                ModuleNames.get(result.moduleName),
                 fontSize = 16.sp,
                 color = Color.White,
                 modifier = Modifier.weight(1f)
@@ -269,17 +270,4 @@ private fun ResultRow(result: TestResult) {
             }
         }
     }
-}
-
-private fun friendlyName(moduleName: String): String = when (moduleName) {
-    "battery" -> "🔋 Батарея"
-    "display" -> "📱 Экран"
-    "audio" -> "🔊 Аудио"
-    "camera" -> "📷 Камеры"
-    "sensors" -> "🧭 Датчики"
-    "connectivity" -> "📡 Связь"
-    "storage" -> "💾 Память"
-    "controls" -> "🎛 Управление"
-    "wifi_speed" -> "📶 Wi-Fi скорость"
-    else -> moduleName
 }

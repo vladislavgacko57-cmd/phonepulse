@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onboarding_title_1">Полная диагностика</string>
+    <string name="onboarding_desc_1">Проверьте батарею, экран, камеры, датчики, память и всё остальное за 3 минуты</string>
+    <string name="onboarding_title_2">Сертификат с QR</string>
+    <string name="onboarding_desc_2">Получите сертификат состояния телефона. Покупатель сканирует QR и видит все результаты</string>
+    <string name="onboarding_title_3">Справедливая цена</string>
+    <string name="onboarding_desc_3">Алгоритм анализирует состояние и рекомендует честную рыночную цену для продажи</string>
+    <string name="skip">Пропустить</string>
+    <string name="next">Далее</string>
+    <string name="start">Начать</string>
+</resources>

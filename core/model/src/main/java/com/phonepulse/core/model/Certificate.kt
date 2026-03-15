@@ -14,5 +14,8 @@ data class Certificate(
     val recommendedPriceMin: Int?,
     val recommendedPriceMax: Int?,
     val currency: String = "RUB",
+    val matchedModel: String? = null,
+    val priceSource: String? = null,
+    val priceDbUpdated: String? = null,
     val appSignature: String = ""
 )

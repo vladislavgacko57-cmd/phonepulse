@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.phonepulse.core.common.ModuleNames
 import com.phonepulse.core.model.Certificate
 
 @Composable
@@ -112,7 +113,7 @@ fun CompareScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        friendlyModuleName(moduleName),
+                        ModuleNames.get(moduleName),
                         fontSize = 14.sp,
                         color = Color.White,
                         modifier = Modifier.weight(1f)
@@ -223,17 +224,4 @@ private fun gradeColor(grade: String): Color = when (grade) {
     "B" -> Color(0xFFFFB300)
     "C" -> Color(0xFFFF9100)
     else -> Color(0xFFFF1744)
-}
-
-private fun friendlyModuleName(name: String): String = when (name) {
-    "battery" -> "🔋 Батарея"
-    "display" -> "📱 Экран"
-    "audio" -> "🔊 Аудио"
-    "camera" -> "📷 Камеры"
-    "sensors" -> "🧭 Датчики"
-    "connectivity" -> "📡 Связь"
-    "storage" -> "💾 Память"
-    "controls" -> "🎛 Управление"
-    "wifi_speed" -> "📶 Wi-Fi скорость"
-    else -> name
 }

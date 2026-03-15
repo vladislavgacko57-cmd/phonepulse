@@ -23,6 +23,7 @@
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:theme="@style/Theme.PhonePulse"
         android:supportsRtl="true">
         <provider
             android:name="androidx.core.content.FileProvider"

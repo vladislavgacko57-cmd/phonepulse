@@ -26,41 +26,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 
-data class OnboardingPage(
-    val emoji: String,
-    val title: String,
-    val description: String
-)
-
-private val onboardingPages = listOf(
-    OnboardingPage(
-        emoji = "\uD83D\uDCF1",
-        title = "Полная диагностика",
-        description = "Проверьте батарею, экран, камеры, датчики, память и всё остальное за 3 минуты"
-    ),
-    OnboardingPage(
-        emoji = "\uD83D\uDCDC",
-        title = "Сертификат с QR",
-        description = "Получите сертификат состояния телефона. Покупатель сканирует QR и видит все результаты"
-    ),
-    OnboardingPage(
-        emoji = "\uD83D\uDCB0",
-        title = "Справедливая цена",
-        description = "Алгоритм анализирует состояние и рекомендует честную рыночную цену для продажи"
-    )
-)
-
 @Composable
 fun OnboardingScreen(
     onComplete: () -> Unit
 ) {
-    val pagerState = rememberPagerState(pageCount = { onboardingPages.size })
+    val titles = listOf(
+        stringResource(R.string.onboarding_title_1),
+        stringResource(R.string.onboarding_title_2),
+        stringResource(R.string.onboarding_title_3)
+    )
+    val descriptions = listOf(
+        stringResource(R.string.onboarding_desc_1),
+        stringResource(R.string.onboarding_desc_2),
+        stringResource(R.string.onboarding_desc_3)
+    )
+    val emojis = listOf("\uD83D\uDCF1", "\uD83D\uDCDC", "\uD83D\uDCB0")
+
+    val pagerState = rememberPagerState(pageCount = { 3 })
     val scope = rememberCoroutineScope()
 
     Column(
@@ -69,12 +58,9 @@ fun OnboardingScreen(
             .background(Color(0xFF0F1923))
             .padding(24.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             TextButton(onClick = onComplete, modifier = Modifier.testTag("onboarding_skip_button")) {
-                Text("Пропустить", color = Color(0xFF8899AA))
+                Text(stringResource(R.string.skip), color = Color(0xFF8899AA))
             }
         }
 
@@ -82,16 +68,15 @@ fun OnboardingScreen(
             state = pagerState,
             modifier = Modifier.weight(1f)
         ) { page ->
-            val p = onboardingPages[page]
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(p.emoji, fontSize = 80.sp)
+                Text(emojis[page], fontSize = 80.sp)
                 Spacer(Modifier.height(32.dp))
                 Text(
-                    p.title,
+                    text = titles[page],
                     modifier = Modifier.testTag("onboarding_title"),
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
@@ -100,7 +85,7 @@ fun OnboardingScreen(
                 )
                 Spacer(Modifier.height(16.dp))
                 Text(
-                    p.description,
+                    text = descriptions[page],
                     fontSize = 16.sp,
                     color = Color(0xFF8899AA),
                     textAlign = TextAlign.Center,
@@ -113,7 +98,7 @@ fun OnboardingScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            repeat(onboardingPages.size) { index ->
+            repeat(3) { index ->
                 Box(
                     modifier = Modifier
                         .padding(4.dp)
@@ -131,7 +116,7 @@ fun OnboardingScreen(
 
         Button(
             onClick = {
-                if (pagerState.currentPage < onboardingPages.size - 1) {
+                if (pagerState.currentPage < 2) {
                     scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
                 } else {
                     onComplete()
@@ -145,7 +130,7 @@ fun OnboardingScreen(
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00C9A7))
         ) {
             Text(
-                if (pagerState.currentPage < onboardingPages.size - 1) "Далее" else "Начать",
+                if (pagerState.currentPage < 2) stringResource(R.string.next) else stringResource(R.string.start),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold
             )

@@ -68,6 +68,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.hilt.navigation.compose)
+    implementation("com.google.android.material:material:1.12.0")
     implementation("com.airbnb.android:lottie-compose:6.6.2")
 
     implementation(libs.hilt.android)

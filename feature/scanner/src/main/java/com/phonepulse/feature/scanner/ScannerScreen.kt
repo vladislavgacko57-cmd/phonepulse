@@ -1,4 +1,4 @@
-package com.phonepulse.feature.scanner
+﻿package com.phonepulse.feature.scanner
 
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -43,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.phonepulse.core.common.ModuleNames
 import com.phonepulse.core.model.Certificate
 import com.phonepulse.core.model.TestStatus
 import kotlinx.serialization.json.Json
@@ -80,7 +81,7 @@ fun ScannerScreen(
                 Text("\uD83D\uDCF7", fontSize = 48.sp)
                 Spacer(Modifier.height(16.dp))
                 Text(
-                    "Нужен доступ к камере\nдля сканирования QR-кода",
+                    "РќСѓР¶РµРЅ РґРѕСЃС‚СѓРї Рє РєР°РјРµСЂРµ\nРґР»СЏ СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ QR-РєРѕРґР°",
                     color = Color.White,
                     fontSize = 18.sp,
                     textAlign = TextAlign.Center
@@ -90,7 +91,7 @@ fun ScannerScreen(
                     onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00C9A7))
                 ) {
-                    Text("Дать разрешение")
+                    Text("Р”Р°С‚СЊ СЂР°Р·СЂРµС€РµРЅРёРµ")
                 }
             }
         }
@@ -106,10 +107,10 @@ fun ScannerScreen(
                                 scannedCertificate = cert
                                 errorMessage = null
                             } else {
-                                errorMessage = "Это не сертификат PhonePulse"
+                                errorMessage = "Р­С‚Рѕ РЅРµ СЃРµСЂС‚РёС„РёРєР°С‚ PhonePulse"
                             }
                         } catch (e: Exception) {
-                            errorMessage = "Ошибка чтения QR: ${e.message}"
+                            errorMessage = "РћС€РёР±РєР° С‡С‚РµРЅРёСЏ QR: ${e.message}"
                         }
                     }
                 )
@@ -132,7 +133,7 @@ fun ScannerScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        "Наведите на QR-код\nсертификата PhonePulse",
+                        "РќР°РІРµРґРёС‚Рµ РЅР° QR-РєРѕРґ\nСЃРµСЂС‚РёС„РёРєР°С‚Р° PhonePulse",
                         color = Color.White,
                         fontSize = 16.sp,
                         textAlign = TextAlign.Center
@@ -164,7 +165,7 @@ fun ScannerScreen(
                 ) {
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Назад",
+                        contentDescription = "РќР°Р·Р°Рґ",
                         tint = Color.White
                     )
                 }
@@ -212,7 +213,7 @@ private fun ScannedCertificateView(
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = Color.White)
             }
             Spacer(Modifier.weight(1f))
-            Text("Проверка сертификата", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text("РџСЂРѕРІРµСЂРєР° СЃРµСЂС‚РёС„РёРєР°С‚Р°", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.weight(1f))
             Spacer(Modifier.size(48.dp))
         }
@@ -231,9 +232,9 @@ private fun ScannedCertificateView(
                 Icon(Icons.Default.CheckCircle, null, tint = Color(0xFF00C853), modifier = Modifier.size(32.dp))
                 Spacer(Modifier.size(12.dp))
                 Column {
-                    Text("Сертификат подтвержден", color = Color(0xFF00C853), fontWeight = FontWeight.Bold)
+                    Text("РЎРµСЂС‚РёС„РёРєР°С‚ РїРѕРґС‚РІРµСЂР¶РґРµРЅ", color = Color(0xFF00C853), fontWeight = FontWeight.Bold)
                     Text(certificate.certId, color = Color(0xFF8899AA), fontSize = 12.sp)
-                    Text("Дата: ${certificate.timestamp.take(10)}", color = Color(0xFF8899AA), fontSize = 12.sp)
+                    Text("Р”Р°С‚Р°: ${certificate.timestamp.take(10)}", color = Color(0xFF8899AA), fontSize = 12.sp)
                 }
             }
         }
@@ -248,7 +249,7 @@ private fun ScannedCertificateView(
             textAlign = TextAlign.Center
         )
         Text(
-            "Android ${certificate.device.androidVersion} • ${certificate.device.ramGb.toInt()}GB RAM • ${certificate.device.storageGb.toInt()}GB",
+            "Android ${certificate.device.androidVersion} вЂў ${certificate.device.ramGb.toInt()}GB RAM вЂў ${certificate.device.storageGb.toInt()}GB",
             fontSize = 13.sp,
             color = Color(0xFF8899AA)
         )
@@ -256,7 +257,7 @@ private fun ScannedCertificateView(
         Spacer(Modifier.height(20.dp))
 
         Text("${certificate.overallScore}", fontSize = 64.sp, fontWeight = FontWeight.Bold, color = gradeColor)
-        Text("Грейд ${certificate.grade}", fontSize = 20.sp, color = gradeColor, fontWeight = FontWeight.SemiBold)
+        Text("Р“СЂРµР№Рґ ${certificate.grade}", fontSize = 20.sp, color = gradeColor, fontWeight = FontWeight.SemiBold)
 
         Spacer(Modifier.height(20.dp))
 
@@ -270,10 +271,10 @@ private fun ScannedCertificateView(
                     modifier = Modifier.padding(20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("\uD83D\uDCB0 Справедливая цена", fontSize = 14.sp, color = Color(0xFF8899AA))
+                    Text("\uD83D\uDCB0 РЎРїСЂР°РІРµРґР»РёРІР°СЏ С†РµРЅР°", fontSize = 14.sp, color = Color(0xFF8899AA))
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        "%,d – %,d ₽".format(certificate.recommendedPriceMin, certificate.recommendedPriceMax),
+                        "%,d вЂ“ %,d в‚Ѕ".format(certificate.recommendedPriceMin, certificate.recommendedPriceMax),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF00C9A7)
@@ -283,7 +284,7 @@ private fun ScannedCertificateView(
         }
 
         Spacer(Modifier.height(24.dp))
-        Text("Детали проверки", fontSize = 16.sp, color = Color(0xFF8899AA), fontWeight = FontWeight.Medium)
+        Text("Р”РµС‚Р°Р»Рё РїСЂРѕРІРµСЂРєРё", fontSize = 16.sp, color = Color(0xFF8899AA), fontWeight = FontWeight.Medium)
         Spacer(Modifier.height(12.dp))
 
         certificate.results.forEach { result ->
@@ -317,7 +318,7 @@ private fun ScannedCertificateView(
                     Spacer(Modifier.size(10.dp))
                     Column(Modifier.weight(1f)) {
                         Text(
-                            friendlyModuleName(result.moduleName),
+                            ModuleNames.get(result.moduleName),
                             fontSize = 15.sp,
                             color = Color.White,
                             fontWeight = FontWeight.Medium
@@ -343,19 +344,6 @@ private fun ScannedCertificateView(
         Spacer(Modifier.height(32.dp))
     }
 }
-
-private fun friendlyModuleName(name: String): String = when (name) {
-    "battery" -> "\uD83D\uDD0B Батарея"
-    "display" -> "\uD83D\uDCF1 Экран"
-    "audio" -> "\uD83D\uDD0A Аудио"
-    "camera" -> "\uD83D\uDCF7 Камеры"
-    "sensors" -> "\uD83E\uDDED Датчики"
-    "connectivity" -> "\uD83D\uDCE1 Связь"
-    "storage" -> "\uD83D\uDCBE Память"
-    "controls" -> "\uD83C\uDF9B Управление"
-    else -> name
-}
-
 fun decodeCertificateFromQR(qrContent: String): Certificate? {
     val payload = when {
         qrContent.startsWith("PP1:") -> qrContent.removePrefix("PP1:")
@@ -372,3 +360,4 @@ fun decodeCertificateFromQR(qrContent: String): Certificate? {
         null
     }
 }
+

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PhonePulse</string>
+    <string name="slogan">Пульс телефона за 3 минуты</string>
+    <string name="start_diagnostic">Начать диагностику</string>
+    <string name="scan_certificate">Сканировать сертификат</string>
+    <string name="history_title">История диагностик</string>
+    <string name="version_label">v1.0.0 • PhonePulse</string>
+</resources>

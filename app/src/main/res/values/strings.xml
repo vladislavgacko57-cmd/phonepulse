@@ -1,17 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">PhonePulse</string>
+
+    <!-- Home Screen -->
+    <string name="slogan">Пульс телефона за 3 минуты</string>
     <string name="start_diagnostic">Начать диагностику</string>
     <string name="scan_certificate">Сканировать сертификат</string>
-    <string name="history">История диагностик</string>
-    <string name="slogan">Пульс телефона за 3 минуты</string>
-    <string name="certificate_title">Сертификат состояния</string>
-    <string name="recommended_price">Рекомендуемая цена</string>
-    <string name="share_certificate">Поделиться сертификатом</string>
-    <string name="save_pdf">Сохранить PDF</string>
-    <string name="grade">Грейд</string>
-    <string name="no_history">Пока нет диагностик</string>
-    <string name="permissions_title">Разрешения</string>
+    <string name="history_title">История диагностик</string>
+    <string name="version_label">v1.0.0 • PhonePulse</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title_1">Полная диагностика</string>
+    <string name="onboarding_desc_1">Проверьте батарею, экран, камеры, датчики, память и всё остальное за 3 минуты</string>
+    <string name="onboarding_title_2">Сертификат с QR</string>
+    <string name="onboarding_desc_2">Получите сертификат состояния телефона. Покупатель сканирует QR и видит все результаты</string>
+    <string name="onboarding_title_3">Справедливая цена</string>
+    <string name="onboarding_desc_3">Алгоритм анализирует состояние и рекомендует честную рыночную цену для продажи</string>
     <string name="skip">Пропустить</string>
     <string name="next">Далее</string>
     <string name="start">Начать</string>
+
+    <!-- Diagnostic -->
+    <string name="diagnostic_title">Диагностика</string>
+    <string name="testing_module">Тестируем: %1$s</string>
+    <string name="generating_cert">Генерация сертификата…</string>
+    <string name="completed">Завершено!</string>
+
+    <!-- Module Names -->
+    <string name="module_battery">🔋 Батарея</string>
+    <string name="module_display">📱 Экран</string>
+    <string name="module_audio">🔊 Аудио</string>
+    <string name="module_camera">📷 Камеры</string>
+    <string name="module_sensors">🧭 Датчики</string>
+    <string name="module_connectivity">📡 Связь</string>
+    <string name="module_storage">💾 Память</string>
+    <string name="module_controls">🎛 Управление</string>
+    <string name="module_wifi_speed">📶 Скорость Wi-Fi</string>
+
+    <!-- Dead Pixel Test -->
+    <string name="tap_to_continue">Тапните для продолжения</string>
+    <string name="dead_pixel_question">Вы заметили битые пиксели\nили пятна на экране?</string>
+    <string name="no_defects">Нет, всё чисто ✓</string>
+    <string name="yes_defects">Да, есть дефекты ✗</string>
+
+    <!-- Touch Test -->
+    <string name="touch_instruction">Водите пальцем по всему экрану</string>
+    <string name="touch_progress">Покрытие: %1$d%%  •  Осталось: %2$dс</string>
+
+    <!-- Volume Keys Test -->
+    <string name="press_volume_keys">Нажмите кнопки громкости</string>
+    <string name="volume_up_label">Громкость +</string>
+    <string name="volume_down_label">Громкость −</string>
+
+    <!-- Burn-in Test -->
+    <string name="burnin_title">Тест на выгорание экрана</string>
+    <string name="burnin_instruction">Сейчас экран станет серым.\n\nПосмотрите, нет ли:\n• Тёмных/светлых полос вверху (статус-бар)\n• Тёмных/светлых полос внизу (навигация)\n• Призрачных контуров клавиатуры или иконок\n\nНаклоните телефон под разными углами.</string>
+    <string name="burnin_start">Начать тест</string>
+    <string name="burnin_gray_50">Серый 50%% — ищите следы выгорания</string>
+    <string name="burnin_gray_25">Серый 25%% — тёмный тест</string>
+    <string name="burnin_gray_75">Серый 75%% — светлый тест</string>
+    <string name="burnin_pattern">Движущийся паттерн — ищите «призраки»</string>
+    <string name="burnin_transition">Переход…</string>
+    <string name="burnin_question">Заметили ли вы:</string>
+    <string name="burnin_details">• Следы статус-бара или навигации?\n• Призрачные контуры иконок/клавиатуры?\n• Неравномерность яркости?</string>
+    <string name="burnin_clean">Нет, экран чистый ✓</string>
+    <string name="burnin_slight">Есть лёгкие следы ⚠</string>
+    <string name="burnin_visible">Заметное выгорание ✗</string>
+
+    <!-- Results -->
+    <string name="grade_label">Грейд: %1$s</string>
+    <string name="recommended_price">💰 Рекомендуемая цена</string>
+    <string name="price_range">%1$s – %2$s ₽</string>
+    <string name="show_certificate">Показать сертификат с QR</string>
+
+    <!-- Certificate -->
+    <string name="certificate_header">СЕРТИФИКАТ СОСТОЯНИЯ</string>
+    <string name="share_certificate">Поделиться сертификатом</string>
+    <string name="save_pdf">Сохранить PDF</string>
+    <string name="fair_price">💰 Справедливая цена</string>
+
+    <!-- Scanner -->
+    <string name="scan_instruction">Наведите на QR-код\nсертификата PhonePulse</string>
+    <string name="camera_permission_needed">Нужен доступ к камере\nдля сканирования QR-кода</string>
+    <string name="grant_permission">Дать разрешение</string>
+    <string name="not_phonepulse_qr">Это не сертификат PhonePulse</string>
+    <string name="qr_read_error">Ошибка чтения QR: %1$s</string>
+    <string name="cert_verified">Сертификат подтверждён</string>
+    <string name="test_details">Детали проверки</string>
+
+    <!-- History -->
+    <string name="history_header">📋 История диагностик</string>
+    <string name="no_history">Пока нет диагностик</string>
+    <string name="compare_selected">📊 Сравнить выбранные</string>
+    <string name="select_to_compare">Нажмите и удерживайте для сравнения</string>
+    <string name="compare_title">📊 Сравнение диагностик</string>
+    <string name="diag_1">Диагностика 1</string>
+    <string name="diag_2">Диагностика 2</string>
+    <string name="by_modules">По модулям:</string>
+
+    <!-- Permissions -->
+    <string name="permissions_title">🔐 Разрешения</string>
+    <string name="permissions_desc">Для полной диагностики нужен доступ к камере, микрофону, местоположению и Bluetooth</string>
+    <string name="permissions_partial">Некоторые разрешения не выданы.\nДиагностика возможна, но некоторые тесты будут пропущены.</string>
+    <string name="retry">Повторить</string>
+    <string name="continue_without">Продолжить без них</string>
+
+    <!-- Share -->
+    <string name="share_text">📱 PhonePulse — Сертификат состояния\n\nУстройство: %1$s\nОбщий балл: %2$d/100 (Грейд %3$s)\n\nСертификат: %4$s\n\nСкачайте PhonePulse и отсканируйте QR-код для проверки!</string>
+    <string name="share_subject">PhonePulse: Сертификат %1$s</string>
+    <string name="share_chooser">Поделиться сертификатом</string>
 </resources>

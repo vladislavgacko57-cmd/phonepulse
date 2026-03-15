@@ -21,6 +21,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Hide legacy ActionBar if it is present in this activity context.
+        actionBar?.hide()
+
         enableEdgeToEdge()
 
         setContent {

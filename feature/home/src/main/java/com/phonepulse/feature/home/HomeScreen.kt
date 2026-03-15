@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.PlayArrow
@@ -23,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -43,17 +45,17 @@ fun HomeScreen(
     ) {
         Spacer(Modifier.height(60.dp))
 
-        Text(text = "📱", fontSize = 64.sp)
+        Text(text = "\uD83D\uDCF1", fontSize = 64.sp)
         Spacer(Modifier.height(12.dp))
         Text(
-            text = "PhonePulse",
+            text = stringResource(R.string.app_name),
             modifier = Modifier.testTag("home_app_name"),
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White
         )
         Text(
-            text = "Пульс телефона за 3 минуты",
+            text = stringResource(R.string.slogan),
             modifier = Modifier.testTag("home_slogan"),
             fontSize = 16.sp,
             color = Color(0xFF8899AA)
@@ -67,11 +69,16 @@ fun HomeScreen(
                 .fillMaxWidth()
                 .height(64.dp)
                 .testTag("home_start_button"),
+            shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00C9A7))
         ) {
             Icon(Icons.Default.PlayArrow, contentDescription = null, tint = Color.White)
             Spacer(Modifier.width(12.dp))
-            Text("Начать диагностику", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+            Text(
+                stringResource(R.string.start_diagnostic),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold
+            )
         }
 
         Spacer(Modifier.height(20.dp))
@@ -82,11 +89,12 @@ fun HomeScreen(
                 .fillMaxWidth()
                 .height(56.dp)
                 .testTag("home_scan_button"),
+            shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFF845EC2))
         ) {
             Icon(Icons.Default.QrCodeScanner, contentDescription = null)
             Spacer(Modifier.width(12.dp))
-            Text("Сканировать сертификат", fontSize = 16.sp)
+            Text(stringResource(R.string.scan_certificate), fontSize = 16.sp)
         }
 
         Spacer(Modifier.height(20.dp))
@@ -99,13 +107,13 @@ fun HomeScreen(
         ) {
             Icon(Icons.Default.History, contentDescription = null, tint = Color(0xFF8899AA))
             Spacer(Modifier.width(8.dp))
-            Text("История диагностик", color = Color(0xFF8899AA))
+            Text(stringResource(R.string.history_title), color = Color(0xFF8899AA))
         }
 
         Spacer(Modifier.weight(1f))
 
         Text(
-            text = "v1.0.0 • PhonePulse",
+            text = stringResource(R.string.version_label),
             fontSize = 12.sp,
             color = Color(0xFF556677),
             textAlign = TextAlign.Center
