@@ -108,37 +108,39 @@ fun ResultsScreen(
                         color = Color(0xFF00C9A7)
                     )
 
+                    // Информация о матчинге
+                    Spacer(Modifier.height(6.dp))
+
                     if (certificate.matchedModel != null) {
-                        Spacer(Modifier.height(4.dp))
                         Text(
-                            text = certificate.matchedModel!!,
+                            text = certificate.matchedModel ?: "",
                             fontSize = 13.sp,
                             color = Color(0xFF8899AA)
                         )
                     }
 
-                    certificate.priceSource?.let { source ->
-                        Text(
-                            text = when (source) {
-                                "exact_match" -> "\u2705 Model matched exactly"
-                                "partial_match" -> "\u2705 Model recognized"
-                                "fuzzy_match" -> "\u26A0\uFE0F Approximate match"
-                                "ram_storage_fallback" -> "\u26A0\uFE0F Price by RAM/Storage"
-                                else -> "\u26A0\uFE0F Base estimate"
-                            },
-                            fontSize = 11.sp,
-                            color = if (source.contains("match")) Color(0xFF00C853) else Color(0xFFFFB300)
-                        )
-                    }
+                    Text(
+                        text = when (certificate.priceSource) {
+                            "exact_match" -> "\u2705 Exact model match"
+                            "partial_match", "reverse_match", "prefix_match" -> "\u2705 Model recognized"
+                            "keyword_match" -> "\u26A0\uFE0F Approximate match"
+                            "ram_storage_fallback" -> "\u26A0\uFE0F Price by RAM/Storage"
+                            "no_database" -> "\u274C Database not loaded!"
+                            "hardcoded" -> "\u274C Using built-in prices"
+                            else -> "\u26A0\uFE0F ${certificate.priceSource ?: "unknown"}"
+                        },
+                        fontSize = 11.sp,
+                        color = when {
+                            certificate.priceSource?.contains("match") == true -> Color(0xFF00C853)
+                            else -> Color(0xFFFFB300)
+                        }
+                    )
 
-                    certificate.priceDbUpdated?.let {
-                        Text(
-                            text = "\u0411\u0430\u0437\u0430 \u0446\u0435\u043D: $it",
-                            fontSize = 10.sp,
-                            color = Color(0xFF556677),
-                            modifier = Modifier.padding(top = 2.dp)
-                        )
-                    }
+                    Text(
+                        text = "DB: ${certificate.priceDbUpdated ?: "unknown"}",
+                        fontSize = 10.sp,
+                        color = Color(0xFF556677)
+                    )
                 }
             }
             Spacer(Modifier.height(24.dp))

@@ -1,26 +1,33 @@
-﻿package com.phonepulse.feature.diagnostic.modules
+package com.phonepulse.feature.diagnostic.modules
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import com.phonepulse.core.model.TestResult
 import com.phonepulse.core.model.TestStatus
 import com.phonepulse.feature.diagnostic.DiagnosticModule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import java.net.URL
 import javax.inject.Inject
 
 /**
- * Wi-Fi speed test that downloads a tiny public CDN file.
+ * Wi-Fi speed test with region-safe endpoints.
  */
 class WifiSpeedTest @Inject constructor() : DiagnosticModule {
     override val moduleName = "wifi_speed"
 
     private val testUrls = listOf(
-        "https://speed.cloudflare.com/__down?bytes=5000000",
-        "https://proof.ovh.net/files/1Mb.dat",
+        // File in GitHub (usually reachable)
+        "https://raw.githubusercontent.com/vladislavgacko57-cmd/phonepulse-data/main/prices/v1/prices.json",
+        // Yandex
+        "https://yandex.ru/",
+        // Google
+        "https://www.google.com/",
+        // Cloudflare
+        "https://speed.cloudflare.com/__down?bytes=1000000",
+        // Hetzner
         "https://ash-speed.hetzner.com/1MB.bin"
     )
 
@@ -31,20 +38,16 @@ class WifiSpeedTest @Inject constructor() : DiagnosticModule {
         val activeNetwork = cm.activeNetwork
         val capabilities = activeNetwork?.let { cm.getNetworkCapabilities(it) }
         val isWifi = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ?: false
-
         details["connected_via_wifi"] = "$isWifi"
 
         if (!isWifi) {
             details["note"] = "not_on_wifi"
-            val score = 50
-            val status = TestStatus.WARNING
-            val summary = "Speed test failed (${details["skip_reason"] ?: "Not connected to Wi-Fi"})"
             return@withContext TestResult(
                 moduleName = moduleName,
-                score = score,
-                status = status,
+                score = 50,
+                status = TestStatus.WARNING,
                 details = details + mapOf("skip_reason" to "Not connected to Wi-Fi"),
-                summary = summary
+                summary = "Speed test failed (Not connected to Wi-Fi)"
             )
         }
 
@@ -57,25 +60,23 @@ class WifiSpeedTest @Inject constructor() : DiagnosticModule {
                 if (result > 0) {
                     downloadSpeed = result
                     success = true
-                    details["test_url"] = url.substringBefore("?").substringAfterLast("/")
+                    details["test_url"] = url
                     break
                 }
-            } catch (_: Exception) {
-                // Try next CDN.
+            } catch (e: Exception) {
+                Log.w("WifiSpeedTest", "Speed check failed for $url: ${e.message}")
             }
         }
 
         if (!success) {
-            val score = 30
-            val status = TestStatus.WARNING
-            val failedDetails = details + mapOf("error" to "all_download_servers_failed")
-            val summary = "Speed test failed (${failedDetails["skip_reason"] ?: failedDetails["error"] ?: "unknown"})"
+            details["error"] = "download_servers_unavailable"
+
             return@withContext TestResult(
-                moduleName = moduleName,
-                score = score,
-                status = status,
-                details = failedDetails,
-                summary = summary
+                moduleName,
+                70,
+                TestStatus.WARNING,
+                details,
+                "Internet connected, speed test servers unavailable"
             )
         }
 
@@ -105,35 +106,50 @@ class WifiSpeedTest @Inject constructor() : DiagnosticModule {
             else -> TestStatus.FAILED
         }
 
-        val summary = if (success) {
-            "Download: ${"%.1f".format(downloadSpeed)} Mbps ($speedLabel)"
-        } else {
-            "Speed test failed (${details["skip_reason"] ?: details["error"] ?: "unknown"})"
-        }
-
-        TestResult(moduleName, score, status, details, summary)
+        TestResult(
+            moduleName = moduleName,
+            score = score,
+            status = status,
+            details = details,
+            summary = "Download: ${"%.1f".format(downloadSpeed)} Mbps ($speedLabel)"
+        )
     }
 
     private fun measureDownloadSpeed(urlString: String): Double {
-        val connection = URL(urlString).openConnection().apply {
-            connectTimeout = 5000
-            readTimeout = 8000
-            setRequestProperty("User-Agent", "PhonePulse/1.0")
-        }
+        val connection = java.net.URL(urlString).openConnection() as java.net.HttpURLConnection
+        connection.connectTimeout = 5000
+        connection.readTimeout = 6000
+        connection.setRequestProperty("User-Agent", "PhonePulse/1.0")
+        connection.setRequestProperty("Accept", "*/*")
+        connection.instanceFollowRedirects = true
 
-        val startTime = System.nanoTime()
-        var totalBytes = 0L
-        val buffer = ByteArray(8192)
-
-        connection.getInputStream().use { input ->
-            while (true) {
-                val bytesRead = input.read(buffer)
-                if (bytesRead == -1) break
-                totalBytes += bytesRead
+        try {
+            connection.connect()
+            val responseCode = connection.responseCode
+            if (responseCode !in 200..399) {
+                return 0.0
             }
-        }
 
-        val elapsedSec = (System.nanoTime() - startTime) / 1_000_000_000.0
-        return if (elapsedSec > 0) (totalBytes * 8.0) / (elapsedSec * 1_000_000) else 0.0
+            val startTime = System.nanoTime()
+            var totalBytes = 0L
+            val buffer = ByteArray(8192)
+
+            connection.inputStream.use { input ->
+                while (true) {
+                    val bytesRead = input.read(buffer)
+                    if (bytesRead == -1) break
+                    totalBytes += bytesRead
+                    if (totalBytes > 2 * 1024 * 1024) break
+                }
+            }
+
+            val elapsedSec = (System.nanoTime() - startTime) / 1_000_000_000.0
+
+            return if (elapsedSec > 0.01 && totalBytes > 100) {
+                (totalBytes * 8.0) / (elapsedSec * 1_000_000)
+            } else 0.0
+        } finally {
+            connection.disconnect()
+        }
     }
 }
