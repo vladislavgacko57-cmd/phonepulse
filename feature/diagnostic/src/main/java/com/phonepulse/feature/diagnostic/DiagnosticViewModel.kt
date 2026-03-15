@@ -1,6 +1,7 @@
 ﻿package com.phonepulse.feature.diagnostic
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.phonepulse.core.common.HapticManager
@@ -253,18 +254,27 @@ class DiagnosticViewModel @Inject constructor(
 
     private fun generateCertificate() {
         viewModelScope.launch {
-            _state.value = _state.value.copy(
-                phase = DiagnosticPhase.GENERATING_CERT,
-                progress = 0.95f
-            )
+            _state.value = _state.value.copy(phase = DiagnosticPhase.GENERATING_CERT, progress = 0.95f)
 
-            runCatching { priceEstimator.loadPrices(context) }
+            // Обязательно загружаем цены здесь перед estimate.
+            try {
+                priceEstimator.loadPrices(context)
+                Log.d("DiagVM", "Prices loaded, models: ${priceEstimator.getModelsCount()}")
+            } catch (e: Exception) {
+                Log.e("DiagVM", "Failed to load prices", e)
+            }
 
             val overallScore = DiagnosticWeights.calculateOverall(results)
             val grade = DiagnosticWeights.gradeFromScore(overallScore)
             val deviceInfo = DeviceInfoCollector.collect(context)
+            Log.d("DiagVM", "Device: ${deviceInfo.manufacturer} ${deviceInfo.model}")
+            Log.d("DiagVM", "RAM: ${deviceInfo.ramGb}GB, Storage: ${deviceInfo.storageGb}GB")
+            Log.d("DiagVM", "Score: $overallScore, Grade: $grade")
+
             val certId = "PP-${Year.now().value}-${UUID.randomUUID().toString().take(8).uppercase()}"
             val estimation = priceEstimator.estimate(deviceInfo, overallScore)
+            Log.d("DiagVM", "Price: ${estimation.minPrice}-${estimation.maxPrice}")
+            Log.d("DiagVM", "Match: ${estimation.matchedModel ?: "none"} (${estimation.source})")
 
             val certificate = Certificate(
                 certId = certId,
